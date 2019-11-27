@@ -8,6 +8,7 @@ require("dotenv").config();
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
 
+// Connect To Db
 mongoose
   .connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
@@ -17,7 +18,9 @@ mongoose
 
 app.use(morgan("dev"));
 // Allow us to extract data from the url
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 // Allow us to extract json data
 app.use(express.json());
 

@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose')
+
+const Product = require('../models/product');
 
 router.get("/", (req, res, next) => {
   res.status(200).json({
@@ -7,31 +10,40 @@ router.get("/", (req, res, next) => {
   });
 });
 
-router.post("/", (req, res, next) => {
-  const product = {
+router.post("/", async (req, res, next) => {
+  // Load model and fill it wit data
+  const product = new Product({
+    _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price
-  };
-  res.status(201).json({
-    message: "We got the POST to products",
-    createdProduct: product
   });
+
+  // Save to the db
+  try {
+    await product.save();
+    res.status(201).json({
+      message: "We got the POST to products",
+      createdProduct: product
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err
+    })
+  }
+
 });
 
-router.get("/:productId", (req, res, next) => {
+router.get("/:productId", async (req, res, next) => {
   // Take the id from the url
-  const id = req.params.productId;
+  try {
+    const id = req.params.productId;
+    const find_product = await Product.findById(id);
+    res.status(200).json(find_product);
 
-  if (id === "special") {
-    res.json({
-      message: "You discovered the special ID",
-      id: id
-    });
-  } else {
-    res.json({
-      message: "You passed an ID"
-    });
+  } catch (err) {
+    console.error(err);
   }
+
 });
 
 router.patch("/:productId", (req, res, next) => {
