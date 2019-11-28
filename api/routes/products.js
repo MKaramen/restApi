@@ -75,9 +75,16 @@ router.get("/:productId", async (req, res, next) => {
   // Take the id from the url
   try {
     const id = req.params.productId;
-    const find_product = await Product.findById(id);
+    const find_product = await Product.findById(id).select('_id name price');
     if (find_product) {
-      res.status(200).json(find_product);
+      res.status(200).json({
+        product: find_product,
+        request: {
+          type: 'GET',
+          description: 'Get all products',
+          url: 'http://localhost:3000/products'
+        }
+      });
     } else {
       res.status(404).json({
         message: "The id doesn't exist"
@@ -127,7 +134,6 @@ router.delete("/:productId", async (req, res, next) => {
 
     res.status(200).json({
       message: "Deleted product",
-      item: deleted_item
     });
 
   } catch (err) {

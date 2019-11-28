@@ -1,21 +1,37 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose')
 
-router.get("/", (req, res, next) => {
+const Order = require('../models/order')
+
+router.get("/", async (req, res, next) => {
+  await Order.find()
   res.status(200).json({
     message: "Orders were fetched"
   });
 });
 
-router.post("/", (req, res, next) => {
-  const order = {
-    productId: req.body.productId,
-    quantity: req.body.quantity
-  };
-  res.status(201).json({
-    message: "Orders were created",
-    order: order
-  });
+router.post("/", async (req, res, next) => {
+  try {
+    const newOrder = new Order({
+      _id: new mongoose.Types.ObjectId(),
+      quantity: req.body.quantity,
+      product: req.body.productId
+    })
+
+    await newOrder.save();
+
+    res.status(201).json({
+      message: "Orders were created",
+      order: newOrder
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: err
+    })
+  }
 });
 
 router.get("/:orderId", (req, res, next) => {
