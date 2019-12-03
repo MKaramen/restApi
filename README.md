@@ -5,7 +5,7 @@
 <h2>Function of the API</h2>
 
 <p>The API can create,delete,select, update Products and Orders.
-It also features a authentication system</p>
+It also features an authentication system</p>
 
 <h2>What's next ?</h2>
 <p>Create an interface to use the api</p>
