@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
+const userRoutes = require("./api/routes/users");
 
 // Connect To Db
 mongoose
@@ -14,13 +15,18 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
+  .then(test => {
+    console.log("Connected");
+  })
   .catch(err => console.log("Failed to connect"));
 
 app.use(morgan("dev"));
 // Allow us to extract data from the url
-app.use(express.urlencoded({
-  extended: false
-}));
+app.use(
+  express.urlencoded({
+    extended: false
+  })
+);
 // Allow us to extract json data
 app.use(express.json());
 
@@ -44,6 +50,7 @@ app.use((req, res, next) => {
 // Adding all the route for each page
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/users", userRoutes);
 
 // Create error 404
 app.use((req, res, next) => {

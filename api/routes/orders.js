@@ -7,7 +7,7 @@ const Product = require('../models/product')
 
 router.get("/", async (req, res, next) => {
   try {
-    const all_order = await Order.find().select('_id quantity product')
+    const all_order = await Order.find().select('_id quantity product').populate('product', 'id name price')
     res.status(200).json({
       message: "Orders were fetched",
       count: all_order.length,
@@ -57,7 +57,7 @@ router.get("/:orderId", async (req, res, next) => {
 
   try {
     const id = req.params.orderId;
-    const orderDetails = await Order.findById(id);
+    const orderDetails = await Order.findById(id).populate('product', );
 
     res.status(200).json({
       message: "Orders details",
