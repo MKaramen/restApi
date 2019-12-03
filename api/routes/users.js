@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const checkAuth = require('../middleware/check-auth')
 
 const User = require("../models/user");
 
-router.get("/", async (req, res, next) => {
+router.get("/", checkAuth, async (req, res, next) => {
   try {
     const all_user = await User.find();
     res.status(200).json({
@@ -79,8 +81,16 @@ router.post("/login", async (req, res, next) => {
       }
 
       if (result) {
+        const token = jwt.sign({
+          email: gotUser.email,
+          userId: gotUser._id
+        }, process.env.JWT_KEY, {
+          expiresIn: "1h"
+        })
+
         return res.status(200).json({
-          message: "Login succeded"
+          message: "Login succeded",
+          token: token
         });
       }
 

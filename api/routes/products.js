@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose')
-
+const checkAuth = require('../middleware/check-auth')
 const Product = require('../models/product');
 
 router.get("/", async (req, res, next) => {
@@ -39,7 +39,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", checkAuth, async (req, res, next) => {
   // Load model and fill it wit data
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
@@ -97,7 +97,7 @@ router.get("/:productId", async (req, res, next) => {
 
 });
 
-router.patch("/:productId", async (req, res, next) => {
+router.patch("/:productId", checkAuth, async (req, res, next) => {
   try {
     const id = req.params.productId;
 
@@ -123,7 +123,7 @@ router.patch("/:productId", async (req, res, next) => {
   }
 });
 
-router.delete("/:productId", async (req, res, next) => {
+router.delete("/:productId", checkAuth, async (req, res, next) => {
   try {
     // Get ID from URL 
     const id = req.params.productId;

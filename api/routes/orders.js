@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose')
+const checkAuth = require('../middleware/check-auth')
 
 const Order = require('../models/order')
 const Product = require('../models/product')
 
-router.get("/", async (req, res, next) => {
+
+router.get("/", checkAuth, async (req, res, next) => {
   try {
     const all_order = await Order.find().select('_id quantity product').populate('product', 'id name price')
     res.status(200).json({
@@ -22,7 +24,7 @@ router.get("/", async (req, res, next) => {
 
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", checkAuth, async (req, res, next) => {
   try {
     await Product.findById(req.body.productId);
 
@@ -53,7 +55,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/:orderId", async (req, res, next) => {
+router.get("/:orderId", checkAuth, async (req, res, next) => {
 
   try {
     const id = req.params.orderId;
@@ -80,7 +82,7 @@ router.get("/:orderId", async (req, res, next) => {
 
 });
 
-router.delete("/:orderId", async (req, res, next) => {
+router.delete("/:orderId", checkAuth, async (req, res, next) => {
   try {
     const id = req.params.orderId;
     console.log(id);
